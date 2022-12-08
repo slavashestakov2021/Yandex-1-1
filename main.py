@@ -1,20 +1,21 @@
 import sys
-from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPainter, QPen, QBrush
+from PyQt5.QtGui import QPainter, QPen, QBrush, QColor
 from random import randint as rnd
+from ui import Ui_Form
 
 
-class Example(QWidget):
+class Example(QWidget, Ui_Form):
     def __init__(self):
         super().__init__()
-        uic.loadUi('UI.ui', self)
+        self.setupUi(self)
         self.btn.clicked.connect(self.push)
         self.c = []
 
     def push(self):
-        self.c.append((rnd(0, 600), rnd(0, 300), rnd(5, 30)))
+        color = QColor(rnd(0, 255), rnd(0, 255), rnd(0, 255))
+        self.c.append((rnd(0, 600), rnd(0, 300), rnd(5, 30), color))
         self.repaint()
 
     def paintEvent(self, event=None):
@@ -24,9 +25,9 @@ class Example(QWidget):
         qp.end()
 
     def draw(self, qp):
-        qp.setPen(QPen(Qt.yellow, 5, Qt.SolidLine))
-        qp.setBrush(QBrush(Qt.yellow, Qt.SolidPattern))
         for circle in self.c:
+            qp.setPen(QPen(circle[-1], 5, Qt.SolidLine))
+            qp.setBrush(QBrush(circle[-1], Qt.SolidPattern))
             qp.drawEllipse(circle[0], circle[1], circle[2], circle[2])
 
 
